@@ -24,8 +24,6 @@ client.connect(function (err) {
 	client.on('notification', function(msg) {
 		var job = JSON.parse(msg.payload);
 
-    console.log(job);
-
 		client.query('SELECT * FROM jobs WHERE name=\'' + job.name + '\' AND user_id=' +
      job.user_id + ' AND status=\'running\'',
 
@@ -35,8 +33,6 @@ client.connect(function (err) {
 				}
 
 				var error = '';
-
-				console.log(res.rowCount, 'Si no es 0, no es bueno');
 
 				if(res.rowCount == 0){
 					setTimeout(function () {
@@ -58,9 +54,7 @@ client.connect(function (err) {
 							return;
 						});
 
-						dedworker.on('exit', (code) => {
-							console.log('Código: '+ code);
-							
+						dedworker.on('exit', (code) => {							
 							if(code > 0){
 								error = codeError(code);
 
