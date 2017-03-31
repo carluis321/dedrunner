@@ -1,0 +1,13 @@
+INSERT INTO jobs (schedule_time, start_time, end_time,name,user_id,status,error_message) VALUES(1000, 10000, 10000, 'job 1', 1, 'queued', ''); /* Se ejecutará en 1s */
+SELECT * FROM jobs;
+
+CREATE FUNCTION newjob() RETURNS trigger AS $$
+DECLARE
+	BEGIN
+        PERFORM pg_notify(CAST('newjob' AS text), row_to_json(NEW)::text);
+        RETURN new;
+	END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER newjob AFTER INSERT ON jobs
+FOR EACH ROW EXECUTE PROCEDURE newjob();
